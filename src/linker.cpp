@@ -446,12 +446,12 @@ int main(int argc, char const *argv[])
           else
           {
             (*it2)->value = tmp->size;
-            cout << (*it2)->name << endl;
-            (*it)->printInfo();
+            //cout << (*it2)->name << endl;
+            //(*it)->printInfo();
             for (auto it3 = (*it)->lstRel->at((*it2)->name)->begin(); it3 != (*it)->lstRel->at((*it2)->name)->end(); it3++)
             {
               (*it3)->offset += (*it2)->value;
-              cout << "Sekc: " << (*it2)->name << " : " << (*it3)->offset << endl;
+              //cout << "Sekc: " << (*it2)->name << " : " << (*it3)->offset << endl;
             }
             tmp->size += (*it2)->size;
           }
@@ -603,10 +603,10 @@ int main(int argc, char const *argv[])
         }
       }
     }
-    cout << "\nKrajnja tabela simbola\n";
+    /*cout << "\nKrajnja tabela simbola\n";
     for(auto it = symTableLinker->begin(); it != symTableLinker->end(); it++) {
       cout << (*it)->name << "\t" << (*it)->sect << "\t" << (*it)->value << "\t" << (*it)->size << "\t" << (*it)->bind << endl;
-    }
+    }*/
 
     for (symbLinker *s : *symTableLinker)
     {
