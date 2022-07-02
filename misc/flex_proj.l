@@ -28,7 +28,7 @@ extern bool newLine;
 %%
 \.[a-zA-Z]+ { i1.val = (char*)YYText(); i1.typ="DIR";  return DIR;}
 
-0x[a-fA-F0-9]{4} { i1.val = (char*)YYText(); i1.typ="HEX"; return HEX;}
+0x[a-fA-F0-9]{1,4} { i1.val = (char*)YYText(); i1.typ="HEX"; return HEX;}
 
 [a-zA-Z_0-9]+: { i1.val = (char*)YYText(); i1.typ="LAB";  return LAB;}
 

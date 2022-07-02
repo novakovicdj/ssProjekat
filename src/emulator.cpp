@@ -267,133 +267,29 @@ int main(int argc, const char *argv[])
       else if (tmp1 == 1)
       {
         tmp = tmp & 0x0F;
-        if (tmp == 6)
-        {
-          // (unsigned short)cpu->regs[7] = (unsigned short)cpu->regs[6]; // ovo zabraniti?
-          // throw BadOperandCombination();
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-
-          cpu->regs[7] = memory[ivtAddr + 2];
-          cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          cpu->psw &= 0x7FFF;
-          interTimer = 0;
-        }
-        else if (tmp == 7)
-        {
-          // (unsigned short)cpu->regs[7] = cpu->psw; // i ovo zabraniti?
-          // throw BadOperandCombination();
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-
-          cpu->regs[7] = memory[ivtAddr + 2];
-          cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          cpu->psw &= 0x7FFF;
-          interTimer = 0;
-        }
-        else
-        {
+        
           oldPc = (unsigned short)cpu->regs[7];
-          cpu->regs[7] = (unsigned short)cpu->regs[tmp % 6];
-        }
+          cpu->regs[7] = (unsigned short)cpu->regs[tmp % 8];
+        
       }
       else if (tmp1 == 2)
       {
         tmp = tmp & 0x0F;
-        if (tmp == 6)
-        {
-          // (unsigned short)cpu->regs[7] = memory[(unsigned short)cpu->regs[6]]; // ovo zabraniti?
-          // throw BadOperandCombination();
-
-          memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-          memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-          memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-          memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-          cpu->regs[7] = memory[ivtAddr + 2];
-          cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          cpu->psw &= 0x7FFF;
-          interTimer = 0;
-        }
-        else if (tmp == 7)
-        {
-          // (unsigned short)cpu->regs[7] = memory[cpu->psw]; // i ovo zabraniti?
-          // throw BadOperandCombination();
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-          cpu->regs[7] = memory[ivtAddr + 2];
-          cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          cpu->psw &= 0x7FFF;
-          interTimer = 0;
-        }
-        else
-        {
+        
           oldPc = (unsigned short)cpu->regs[7];
-          cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 6]];
-          cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 6] + 1] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-        }
+          cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 8]];
+          cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 8] + 1] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
+        
       }
       else if (tmp1 == 3)
       {
         val1 = (short)memory[(unsigned short)cpu->regs[7]++];
         val1 = ((short)memory[(unsigned short)cpu->regs[7]++] << 8) | val1 & 0xFF;
         tmp = tmp & 0x0F;
-        if (tmp == 6)
-        {
-          // (unsigned short)cpu->regs[7] = memory[((unsigned short)cpu->regs[6] + val1) % 65536]; // ovo zabraniti?
-          // throw BadOperandCombination();
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-          cpu->regs[7] = memory[ivtAddr + 2];
-          cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          cpu->psw &= 0x7FFF;
-          interTimer = 0;
-        }
-        else if (tmp == 7)
-        {
-          // (unsigned short)cpu->regs[7] = memory[(cpu->psw + val1) % 65536]; // i ovo zabraniti?
-          // throw BadOperandCombination();
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-          cpu->regs[6]--;
-          memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-          cpu->regs[7] = memory[ivtAddr + 2];
-          cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          cpu->psw &= 0x7FFF;
-          interTimer = 0;
-        }
-        else
-        {
+        
           oldPc = (unsigned short)cpu->regs[7];
           cpu->regs[7] = memory[(cpu->regs[tmp % 6] + val1) % 65536];
-        }
+        
       }
       else
       {
@@ -464,44 +360,9 @@ int main(int argc, const char *argv[])
         if ((cpu->psw & Z_FLAG) != 0)
         {
           tmp = tmp & 0x0F;
-          if (tmp == 6)
-          {
-            // (unsigned short)cpu->regs[7] = (unsigned short)cpu->regs[6]; // ovo zabraniti?
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else if (tmp == 7)
-          {
-            // (unsigned short)cpu->regs[7] = cpu->psw; // i ovo zabraniti?
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else
-          {
+          
             cpu->regs[7] = cpu->regs[tmp % 8];
-          }
+          
         }
       }
       else if (tmp1 == 2)
@@ -509,45 +370,10 @@ int main(int argc, const char *argv[])
         if ((cpu->psw & Z_FLAG) != 0)
         {
           tmp = tmp & 0x0F;
-          if (tmp == 6)
-          {
-            // (unsigned short)cpu->regs[7] = memory[(unsigned short)cpu->regs[6]]; // ovo zabraniti?
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else if (tmp == 7)
-          {
-            // (unsigned short)cpu->regs[7] = memory[cpu->psw]; // i ovo zabraniti?
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else
-          {
-            cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 6]];
-            cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 6] + 1] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          }
+          
+            cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 8]];
+            cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 8] + 1] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
+          
         }
       }
       else if (tmp1 == 3)
@@ -557,45 +383,10 @@ int main(int argc, const char *argv[])
         if ((cpu->psw & Z_FLAG) != 0)
         {
           tmp = tmp & 0x0F;
-          if (tmp == 6)
-          {
-            // (unsigned short)cpu->regs[7] = memory[((unsigned short)cpu->regs[6] + val1) % 65536]; // ovo zabraniti?
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else if (tmp == 7)
-          {
-            // (unsigned short)cpu->regs[7] = memory[(cpu->psw + val1) % 65536]; // i ovo zabraniti?
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else
-          {
+          
             cpu->regs[7] = (unsigned short)memory[(cpu->regs[tmp % 6] + val1) % 65536];
             cpu->regs[7] = ((unsigned short)memory[(cpu->regs[tmp % 6] + val1 + 1) % 65536] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          }
+          
         }
       }
       else
@@ -650,44 +441,9 @@ int main(int argc, const char *argv[])
         if ((cpu->psw & Z_FLAG) == (short)0)
         {
           tmp = tmp & 0x0F;
-          if (tmp == 6)
-          {
-            // (unsigned short)cpu->regs[7] = (unsigned short)cpu->regs[6]; // ovo zabraniti?
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else if (tmp == 7)
-          {
-            // (unsigned short)cpu->regs[7] = cpu->psw; // i ovo zabraniti?
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else
-          {
-            cpu->regs[7] = cpu->regs[tmp % 6];
-          }
+          
+          cpu->regs[7] = cpu->regs[tmp % 6];
+          
         }
       }
       else if (tmp1 == 2)
@@ -695,45 +451,10 @@ int main(int argc, const char *argv[])
         if ((cpu->psw & Z_FLAG) == (short)0)
         {
           tmp = tmp & 0x0F;
-          if (tmp == 6)
-          {
-            // (unsigned short)cpu->regs[7] = memory[(unsigned short)cpu->regs[6]]; // ovo zabraniti?
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else if (tmp == 7)
-          {
-            // (unsigned short)cpu->regs[7] = memory[cpu->psw]; // i ovo zabraniti?
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else
-          {
-            cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 6]];
-            cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 6]] + 1) | ((unsigned short)cpu->regs[7] & 0xFF);
-          }
+          
+            cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 8]];
+            cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 8]] + 1) | ((unsigned short)cpu->regs[7] & 0xFF);
+          
         }
       }
       else if (tmp1 == 3)
@@ -743,45 +464,10 @@ int main(int argc, const char *argv[])
         tmp = tmp & 0x0F;
         if ((cpu->psw & Z_FLAG) == (short)0)
         {
-          if (tmp == 6)
-          {
-            // (unsigned short)cpu->regs[7] = memory[((unsigned short)cpu->regs[6] + val1) % 65536]; // ovo zabraniti?
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else if (tmp == 7)
-          {
-            // (unsigned short)cpu->regs[7] = memory[(cpu->psw + val1) % 65536]; // i ovo zabraniti?
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else
-          {
+          
             cpu->regs[7] = (unsigned short)memory[(cpu->regs[tmp % 6] + val1) % 65536];
             cpu->regs[7] = ((unsigned short)memory[(cpu->regs[tmp % 6] + val1 + 1) % 65536] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          }
+          
         }
       }
       else
@@ -839,44 +525,9 @@ int main(int argc, const char *argv[])
         if (((cpu->psw & Z_FLAG) == 0) && (((cpu->psw & O_FLAG) >> 1) == ((cpu->psw & N_FLAG) >> 3)))
         {
           tmp = tmp & 0x0F;
-          if (tmp == 6)
-          {
-            // (unsigned short)cpu->regs[7] = (unsigned short)cpu->regs[6]; // ovo zabraniti?
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else if (tmp == 7)
-          {
-            // (unsigned short)cpu->regs[7] = cpu->psw; // i ovo zabraniti?
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else
-          {
+          
             cpu->regs[7] = cpu->regs[tmp % 6];
-          }
+          
         }
       }
       else if (tmp1 == 2)
@@ -884,47 +535,10 @@ int main(int argc, const char *argv[])
         if (((cpu->psw & Z_FLAG) == 0) && (((cpu->psw & O_FLAG) >> 1) == ((cpu->psw & N_FLAG) >> 3)))
         {
           tmp = tmp & 0x0F;
-          if (tmp == 6)
-          {
-            // (unsigned short)cpu->regs[7] = memory[(unsigned short)cpu->regs[6]]; // ovo zabraniti?
-            // throw BadOperandCombination();
-
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else if (tmp == 7)
-          {
-            // (unsigned short)cpu->regs[7] = memory[cpu->psw]; // i ovo zabraniti?
-            // throw BadOperandCombination();
-
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else
-          {
+          
             cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 6]];
             cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 6] + 1] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          }
+          
         }
       }
       else if (tmp1 == 3)
@@ -934,47 +548,10 @@ int main(int argc, const char *argv[])
         if (((cpu->psw & Z_FLAG) == 0) && (((cpu->psw & O_FLAG) >> 1) == ((cpu->psw & N_FLAG) >> 3)))
         {
           tmp = tmp & 0x0F;
-          if (tmp == 6)
-          {
-            // (unsigned short)cpu->regs[7] = memory[((unsigned short)cpu->regs[6] + val1) % 65536]; // ovo zabraniti?
-            // throw BadOperandCombination();
-
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else if (tmp == 7)
-          {
-            // (unsigned short)cpu->regs[7] = memory[(cpu->psw + val1) % 65536]; // i ovo zabraniti?
-            // throw BadOperandCombination();
-
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
-          else
-          {
+         
             cpu->regs[7] = (unsigned short)memory[(cpu->regs[tmp % 6] + val1) % 65536];
             cpu->regs[7] = ((unsigned short)memory[(cpu->regs[tmp % 6] + val1 + 1) % 65536] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          }
+          
         }
       }
       else
@@ -1036,9 +613,10 @@ int main(int argc, const char *argv[])
         cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
         cpu->psw &= 0x7FFF;
         interTimer = 0;
+      } else {
+        // cout << cpu->regs[tmp >> 4] << " " << cpu->regs[tmp & 0xF];
+        cpu->regs[tmp >> 4] = cpu->regs[tmp >> 4] / cpu->regs[tmp & 0xF];
       }
-      // cout << cpu->regs[tmp >> 4] << " " << cpu->regs[tmp & 0xF];
-      cpu->regs[tmp >> 4] = cpu->regs[tmp >> 4] / cpu->regs[tmp & 0xF];
       break;
     case 0x74: // cmp, treba proveriti ove flegove
       //cout << "cmp\n";
@@ -1286,23 +864,7 @@ int main(int argc, const char *argv[])
         }
         else if (tmp1 == 1)
         {
-          if (tmp >> 4 == (char)6 || tmp >> 4 == (char)7)
-          {
-            // throw BadOperandCombination();
-
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-          }
+          
           cpu->regs[tmp >> 4] = cpu->regs[tmp & 0xF]; // ovo zabraniti?
         }
         else
@@ -1382,6 +944,10 @@ int main(int argc, const char *argv[])
           // cpu->regs[tmp>>4] = ((short)memory[cpu->regs[tmp&0xF]+1] << 8)|((short)memory[cpu->regs[tmp & 0xF]] & 0xFF);
           memory[(unsigned short)cpu->regs[tmp & 0xF]] = (char)(cpu->regs[tmp >> 4] & 0xFF);
           memory[(unsigned short)cpu->regs[tmp & 0xF] + 1] = (char)(cpu->regs[tmp >> 4] >> 8);
+          if ((unsigned short)(cpu->regs[tmp & 0xF]) == 0xFF00)
+          {
+            inReg = true;
+          }
         }
         else if (tmp1 == 4)
         {
@@ -1412,23 +978,7 @@ int main(int argc, const char *argv[])
         }
         else if (tmp1 == 1)
         {
-          if (tmp & 0xF == (unsigned char)7)
-          {
-            // throw BadOperandCombination();
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
-            cpu->regs[7] = memory[ivtAddr + 2];
-            cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->psw &= 0x7FFF;
-            interTimer = 0;
-            break;
-          }
+          
           cpu->regs[tmp & 0xF] = cpu->regs[tmp >> 8]; // ovo zabraniti?
         }
         else
@@ -1468,8 +1018,8 @@ int main(int argc, const char *argv[])
     {
       // cout << "usao\n";
       mtx.lock();
+      write(1, &memory[term_out], sizeof(char));
       mtx.unlock();
-      write(1, &memory[term_out], sizeof(char));;
       inReg = false;
     }
     if (interTerm)
@@ -1502,7 +1052,6 @@ int main(int argc, const char *argv[])
       cpu->psw &= 0x7FFF;
       interTimer = 0;
     }
-    // posle ide obrada prekida
   }
   term.c_cc[VMIN] = 0;
   tcsetattr(0, TCSANOW, &term);

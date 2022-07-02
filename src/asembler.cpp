@@ -104,7 +104,7 @@ void processOperandJump(FlexLexer *lex, string op)
   if (tok == NUM || tok == HEX)
   {
     str = i1.val;
-    number = tok == NUM ? atoi(i1.val) : stoi(str.substr(2, 6), nullptr, 16);
+    number = tok == NUM ? atoi(i1.val) : stoi(str.substr(2, str.length()), nullptr, 16);
     sectionContent->at(currSection)->push_back((char)240);
     sectionContent->at(currSection)->push_back((char)0);
     sectionContent->at(currSection)->push_back((char)(number & 0xFF));
@@ -162,7 +162,7 @@ void processOperandJump(FlexLexer *lex, string op)
       else if (tok == HEX)
       {
         str = i1.val;
-        number = stoi(str.substr(2, 6), nullptr, 16);
+        number = stoi(str.substr(2, str.length()), nullptr, 16);
         sectionContent->at(currSection)->push_back((char)240);
         sectionContent->at(currSection)->push_back((char)4);
         sectionContent->at(currSection)->push_back((char)number & 0xFF);
@@ -211,7 +211,7 @@ void processOperandJump(FlexLexer *lex, string op)
           if (tok == NUM || tok == HEX)
           {
             str = i1.val;
-            number = tok == NUM ? atoi(i1.val) : stoi(str.substr(2, 6), nullptr, 16);
+            number = tok == NUM ? atoi(i1.val) : stoi(str.substr(2, str.length()), nullptr, 16);
             sectionContent->at(currSection)->push_back((char)3);
             sectionContent->at(currSection)->push_back((char)(number & 0xFF));
             sectionContent->at(currSection)->push_back((char)((number >> 8) & 0xFF));
@@ -318,7 +318,7 @@ void processLdrAndStr(FlexLexer *lex, string op)
         str = i1.val;
         sectionContent->at(currSection)->push_back((char)num);
         sectionContent->at(currSection)->push_back((char)0);
-        num = tok == NUM ? atoi(i1.val) : stoi(str.substr(2, 6), nullptr, 16);
+        num = tok == NUM ? atoi(i1.val) : stoi(str.substr(2, str.length()), nullptr, 16);
         sectionContent->at(currSection)->push_back((char)(num & 0xFF));
         sectionContent->at(currSection)->push_back((char)((num >> 8) & 0xFF));
         currSectionOffset += 5;
@@ -390,7 +390,7 @@ void processLdrAndStr(FlexLexer *lex, string op)
           {
             sectionContent->at(currSection)->push_back((char)3);
             str = i1.val;
-            num = tok == NUM ? atoi(i1.val) : stoi(str.substr(2, 6), nullptr, 16);
+            num = tok == NUM ? atoi(i1.val) : stoi(str.substr(2, str.length()), nullptr, 16);
             sectionContent->at(currSection)->push_back((char)(num & 0xFF));
             sectionContent->at(currSection)->push_back((char)((num >> 8) & 0xFF));
             currSectionOffset += 5;
@@ -445,7 +445,7 @@ void processLdrAndStr(FlexLexer *lex, string op)
     sectionContent->at(currSection)->push_back((char)num);
     sectionContent->at(currSection)->push_back((char)4);
     str = i1.val;
-    num = tok == NUM ? atoi(i1.val) : stoi(str.substr(2, 6), nullptr, 16);
+    num = tok == NUM ? atoi(i1.val) : stoi(str.substr(2, str.length()), nullptr, 16);
     sectionContent->at(currSection)->push_back((char)(num & 0xFF));
     sectionContent->at(currSection)->push_back((char)((num >> 8) & 0xFF));
     currSectionOffset += 5;
@@ -556,7 +556,7 @@ void processDirective(string dir, FlexLexer *lex)
         else if (tok == HEX)
         {
           txt = i1.val;
-          len = stoi(txt.substr(2, 6), nullptr, 16);
+          len = stoi(txt.substr(2, txt.length()), nullptr, 16);
           sectionContent->at(currSection)->push_back((char)(len & 0xFF));
           sectionContent->at(currSection)->push_back((char)((len >> 8) & 0xFF));
         }
@@ -573,7 +573,7 @@ void processDirective(string dir, FlexLexer *lex)
         throw BadDirectiveException(".skip");
       }
       txt = i1.val;
-      len = tok == NUM ? atoi(i1.val) : stoi(txt.substr(2, 6), nullptr, 16);
+      len = tok == NUM ? atoi(i1.val) : stoi(txt.substr(2, txt.length()), nullptr, 16);
       currSectionOffset += len;
       for (int i = 0; i < len; i++)
       {
