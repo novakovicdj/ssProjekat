@@ -189,7 +189,7 @@ int main(int argc, const char *argv[])
     exit(-1);
   }
   thread *t1 = new thread(terminalIn);
-  //thread *t2 = new thread(terminalOut);
+  // thread *t2 = new thread(terminalOut);
   thread *t3 = new thread(timer);
   cpu->regs[7] = (unsigned short)memory[0];
   cpu->regs[7] = ((unsigned short)memory[1] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
@@ -201,18 +201,21 @@ int main(int argc, const char *argv[])
   // pfdFake.events = POLLIN;
   while (!isHalt)
   {
+    // sleep(1);
+    // printf("%02hx", cpu->regs[7]);
     op = memory[(unsigned short)cpu->regs[7]++];
     switch (op)
     {
     case 0x00: // halt
+      // cout << "halt" << endl;
       isHalt = true;
       break;
     case 0x10: // int
-      //cout << "Int\n";
+      // cout << "Int\n";
 
       tmp = memory[(unsigned short)cpu->regs[7]++];
       tmp = tmp >> 4;
-      //cout << (unsigned short)tmp << endl;
+      // cout << (unsigned short)tmp << endl;
       cpu->regs[6]--;
       memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
       cpu->regs[6]--;
@@ -224,10 +227,10 @@ int main(int argc, const char *argv[])
 
       cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp] * 2];
       cpu->regs[7] = ((unsigned short)(memory[cpu->regs[tmp] * 2 + 1]) << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-      //cout << (unsigned short)cpu->regs[7];
+      // cout << (unsigned short)cpu->regs[7];
       break;
     case 0x20: // iret
-      //cout << "iret\n";
+      // cout << "iret\n";
       cpu->psw = (unsigned short)memory[(unsigned short)cpu->regs[6]++];
       cpu->psw = (cpu->psw & 0xFF) | ((unsigned short)memory[(unsigned short)cpu->regs[6]++] << 8);
       cpu->regs[7] = (unsigned short)memory[(unsigned short)cpu->regs[6]++];
@@ -237,7 +240,7 @@ int main(int argc, const char *argv[])
 
       isCall = true;
     case 0x50: // jmp - ovo proveri jer sam stavio da call samo propadne u jmp deo ali nisam siguran da to tako radi
-      //cout << "call ili jmp\n";
+      // cout << "call ili jmp\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       tmp1 = memory[(unsigned short)cpu->regs[7]++];
       if ((tmp1 & 0xF) == 0)
@@ -246,6 +249,7 @@ int main(int argc, const char *argv[])
         val1 = (unsigned short)memory[(unsigned short)cpu->regs[7]++];
         val1 = ((unsigned short)memory[(unsigned short)cpu->regs[7]++] << 8) | val1 & 0xFF;
         oldPc = (unsigned short)cpu->regs[7];
+        // cout << "\novde " << val1 << endl;
         cpu->regs[7] = val1;
         // cout << "pc " << (unsigned short)cpu->regs[7];
       }
@@ -267,29 +271,27 @@ int main(int argc, const char *argv[])
       else if (tmp1 == 1)
       {
         tmp = tmp & 0x0F;
-        
-          oldPc = (unsigned short)cpu->regs[7];
-          cpu->regs[7] = (unsigned short)cpu->regs[tmp % 8];
-        
+
+        oldPc = (unsigned short)cpu->regs[7];
+        cpu->regs[7] = (unsigned short)cpu->regs[tmp % 8];
       }
       else if (tmp1 == 2)
       {
         tmp = tmp & 0x0F;
-        
-          oldPc = (unsigned short)cpu->regs[7];
-          cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 8]];
-          cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 8] + 1] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-        
+
+        oldPc = (unsigned short)cpu->regs[7];
+        cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 8]];
+        cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 8] + 1] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
       }
       else if (tmp1 == 3)
       {
         val1 = (short)memory[(unsigned short)cpu->regs[7]++];
         val1 = ((short)memory[(unsigned short)cpu->regs[7]++] << 8) | val1 & 0xFF;
         tmp = tmp & 0x0F;
-        
-          oldPc = (unsigned short)cpu->regs[7];
-          cpu->regs[7] = memory[(cpu->regs[tmp % 6] + val1) % 65536];
-        
+
+        oldPc = (unsigned short)cpu->regs[7];
+        cpu->regs[7] = memory[(cpu->regs[tmp % 8] + val1) % 65536];
+        cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 8] + val1 + 1] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
       }
       else
       {
@@ -311,22 +313,23 @@ int main(int argc, const char *argv[])
       {
         isCall = false;
         // cout << "pre " << oldPc;
-        //cout << "here " << oldPc << endl; 
+        // cout << "here " << oldPc << endl;
         cpu->regs[6]--;
         memory[(unsigned short)cpu->regs[6]] = (char)(oldPc >> 8);
         cpu->regs[6]--;
         memory[(unsigned short)cpu->regs[6]] = (char)(oldPc & 0xFF);
       }
+      // cout << "PC: " << cpu->regs[7] << endl;
       break;
     case 0x40: // ret
-      //cout << "ret\n";
+      // cout << "ret\n";
       cpu->regs[7] = (unsigned short)memory[(unsigned short)cpu->regs[6]++];
       cpu->regs[7] = ((unsigned short)cpu->regs[7] & 0xFF) | ((unsigned short)memory[(unsigned short)cpu->regs[6]++] << 8);
-      //cout << "ret pc " << (unsigned short)cpu->regs[7] << endl; 
-      // cout << "\nposle " << (unsigned short)cpu->regs[7];
+      // cout << "ret pc " << (unsigned short)cpu->regs[7] << endl;
+      //  cout << "\nposle " << (unsigned short)cpu->regs[7];
       break;
     case 0x51: // jeq
-      //cout << "jeq\n";
+      // cout << "jeq\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       tmp1 = memory[(unsigned short)cpu->regs[7]++];
 
@@ -360,9 +363,8 @@ int main(int argc, const char *argv[])
         if ((cpu->psw & Z_FLAG) != 0)
         {
           tmp = tmp & 0x0F;
-          
-            cpu->regs[7] = cpu->regs[tmp % 8];
-          
+
+          cpu->regs[7] = cpu->regs[tmp % 8];
         }
       }
       else if (tmp1 == 2)
@@ -370,10 +372,9 @@ int main(int argc, const char *argv[])
         if ((cpu->psw & Z_FLAG) != 0)
         {
           tmp = tmp & 0x0F;
-          
-            cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 8]];
-            cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 8] + 1] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          
+
+          cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 8]];
+          cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 8] + 1] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
         }
       }
       else if (tmp1 == 3)
@@ -383,10 +384,9 @@ int main(int argc, const char *argv[])
         if ((cpu->psw & Z_FLAG) != 0)
         {
           tmp = tmp & 0x0F;
-          
-            cpu->regs[7] = (unsigned short)memory[(cpu->regs[tmp % 6] + val1) % 65536];
-            cpu->regs[7] = ((unsigned short)memory[(cpu->regs[tmp % 6] + val1 + 1) % 65536] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          
+
+          cpu->regs[7] = (unsigned short)memory[(cpu->regs[tmp % 6] + val1) % 65536];
+          cpu->regs[7] = ((unsigned short)memory[(cpu->regs[tmp % 6] + val1 + 1) % 65536] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
         }
       }
       else
@@ -408,7 +408,7 @@ int main(int argc, const char *argv[])
 
       break;
     case 0x52: // jne
-      //cout << "jne\n";
+      // cout << "jne\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       tmp1 = memory[(unsigned short)cpu->regs[7]++];
       if ((tmp1 & 0xF) == 0)
@@ -441,9 +441,8 @@ int main(int argc, const char *argv[])
         if ((cpu->psw & Z_FLAG) == (short)0)
         {
           tmp = tmp & 0x0F;
-          
+
           cpu->regs[7] = cpu->regs[tmp % 6];
-          
         }
       }
       else if (tmp1 == 2)
@@ -451,10 +450,9 @@ int main(int argc, const char *argv[])
         if ((cpu->psw & Z_FLAG) == (short)0)
         {
           tmp = tmp & 0x0F;
-          
-            cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 8]];
-            cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 8]] + 1) | ((unsigned short)cpu->regs[7] & 0xFF);
-          
+
+          cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 8]];
+          cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 8]] + 1) | ((unsigned short)cpu->regs[7] & 0xFF);
         }
       }
       else if (tmp1 == 3)
@@ -464,10 +462,9 @@ int main(int argc, const char *argv[])
         tmp = tmp & 0x0F;
         if ((cpu->psw & Z_FLAG) == (short)0)
         {
-          
-            cpu->regs[7] = (unsigned short)memory[(cpu->regs[tmp % 6] + val1) % 65536];
-            cpu->regs[7] = ((unsigned short)memory[(cpu->regs[tmp % 6] + val1 + 1) % 65536] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          
+
+          cpu->regs[7] = (unsigned short)memory[(cpu->regs[tmp % 6] + val1) % 65536];
+          cpu->regs[7] = ((unsigned short)memory[(cpu->regs[tmp % 6] + val1 + 1) % 65536] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
         }
       }
       else
@@ -489,7 +486,7 @@ int main(int argc, const char *argv[])
 
       break;
     case 0x53: // jgt
-      //cout << "jgt\n";
+      // cout << "jgt\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       tmp1 = memory[(unsigned short)cpu->regs[7]++];
 
@@ -525,9 +522,8 @@ int main(int argc, const char *argv[])
         if (((cpu->psw & Z_FLAG) == 0) && (((cpu->psw & O_FLAG) >> 1) == ((cpu->psw & N_FLAG) >> 3)))
         {
           tmp = tmp & 0x0F;
-          
-            cpu->regs[7] = cpu->regs[tmp % 6];
-          
+
+          cpu->regs[7] = cpu->regs[tmp % 6];
         }
       }
       else if (tmp1 == 2)
@@ -535,10 +531,9 @@ int main(int argc, const char *argv[])
         if (((cpu->psw & Z_FLAG) == 0) && (((cpu->psw & O_FLAG) >> 1) == ((cpu->psw & N_FLAG) >> 3)))
         {
           tmp = tmp & 0x0F;
-          
-            cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 6]];
-            cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 6] + 1] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          
+
+          cpu->regs[7] = (unsigned short)memory[cpu->regs[tmp % 6]];
+          cpu->regs[7] = ((unsigned short)memory[cpu->regs[tmp % 6] + 1] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
         }
       }
       else if (tmp1 == 3)
@@ -548,10 +543,9 @@ int main(int argc, const char *argv[])
         if (((cpu->psw & Z_FLAG) == 0) && (((cpu->psw & O_FLAG) >> 1) == ((cpu->psw & N_FLAG) >> 3)))
         {
           tmp = tmp & 0x0F;
-         
-            cpu->regs[7] = (unsigned short)memory[(cpu->regs[tmp % 6] + val1) % 65536];
-            cpu->regs[7] = ((unsigned short)memory[(cpu->regs[tmp % 6] + val1 + 1) % 65536] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
-          
+
+          cpu->regs[7] = (unsigned short)memory[(cpu->regs[tmp % 6] + val1) % 65536];
+          cpu->regs[7] = ((unsigned short)memory[(cpu->regs[tmp % 6] + val1 + 1) % 65536] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
         }
       }
       else
@@ -573,29 +567,29 @@ int main(int argc, const char *argv[])
       }
       break;
     case 0x60: // xchg
-      //cout << "xchg\n";
+      // cout << "xchg\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       val1 = cpu->regs[tmp >> 4];
       cpu->regs[tmp >> 4] = cpu->regs[tmp & 0xF];
       cpu->regs[tmp & 0xFF] = val1;
       break;
     case 0x70: // add
-      //cout << "add\n";
+      // cout << "add\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       cpu->regs[tmp >> 4] += cpu->regs[tmp & 0xF];
       break;
     case 0x71: // sub
-      //cout << "sub\n";
+      // cout << "sub\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       cpu->regs[tmp >> 4] -= cpu->regs[tmp & 0xF];
       break;
     case 0x72: // mul
-      //cout << "mul\n";
+      // cout << "mul\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       cpu->regs[tmp >> 4] *= cpu->regs[tmp & 0xF];
       break;
     case 0x73: // div
-      //cout << "div\n";
+      // cout << "div\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       if (cpu->regs[tmp & 0xF] == 0)
       {
@@ -613,13 +607,15 @@ int main(int argc, const char *argv[])
         cpu->regs[7] = (memory[ivtAddr + 3] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
         cpu->psw &= 0x7FFF;
         interTimer = 0;
-      } else {
+      }
+      else
+      {
         // cout << cpu->regs[tmp >> 4] << " " << cpu->regs[tmp & 0xF];
         cpu->regs[tmp >> 4] = cpu->regs[tmp >> 4] / cpu->regs[tmp & 0xF];
       }
       break;
     case 0x74: // cmp, treba proveriti ove flegove
-      //cout << "cmp\n";
+      // cout << "cmp\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       if (abs(cpu->regs[tmp >> 4]) < abs(cpu->regs[tmp & 0xF]))
       { // C
@@ -661,27 +657,27 @@ int main(int argc, const char *argv[])
       // cout << "N: " << ((cpu->psw & N_FLAG) >> 3) << endl;
       break;
     case 0x80: // not
-      //cout << "not\n";
+      // cout << "not\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       cpu->regs[tmp >> 4] = ~cpu->regs[tmp >> 4];
       break;
     case 0x81: // and
-      //cout << "and\n";
+      // cout << "and\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       cpu->regs[tmp >> 4] &= cpu->regs[tmp & 0xF];
       break;
     case 0x82: // or
-      //cout << "or\n";
+      // cout << "or\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       cpu->regs[tmp >> 4] |= cpu->regs[tmp & 0xF];
       break;
     case 0x83: // xor
-      //cout << "xor\n";
+      // cout << "xor\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       cpu->regs[tmp >> 4] ^= cpu->regs[tmp & 0xF];
       break;
     case 0x84: // test
-      //cout << "test\n";
+      // cout << "test\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       val1 = cpu->regs[tmp >> 4] & cpu->regs[tmp & 0xF];
       if (val1 == 0)
@@ -703,7 +699,7 @@ int main(int argc, const char *argv[])
       // setovanje flegova
       break;
     case 0x90: // shl
-      //cout << "shl\n";
+      // cout << "shl\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       if (cpu->regs[tmp & 0xF] > 0)
       {
@@ -739,7 +735,7 @@ int main(int argc, const char *argv[])
       // setovanje flegova
       break;
     case 0x91: // shr
-      //cout << "shr\n";
+      // cout << "shr\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       if (cpu->regs[tmp & 0xF] > 0)
       {
@@ -774,7 +770,7 @@ int main(int argc, const char *argv[])
       // setovanje flegova
       break;
     case 0xA0: // ldr, pop
-      //cout << "ldr ili pop\n";
+      // cout << "ldr ili pop\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       if (tmp >> 4 == (unsigned short)7)
       {
@@ -794,7 +790,7 @@ int main(int argc, const char *argv[])
         interTimer = 0;
       }
       tmp1 = memory[(unsigned short)cpu->regs[7]++];
-      if (tmp1  == 66)
+      if (tmp1 == 66)
       {
         // pop
         cpu->regs[tmp >> 4] = (unsigned short)memory[(unsigned short)cpu->regs[6]++];
@@ -864,7 +860,7 @@ int main(int argc, const char *argv[])
         }
         else if (tmp1 == 1)
         {
-          
+
           cpu->regs[tmp >> 4] = cpu->regs[tmp & 0xF]; // ovo zabraniti?
         }
         else
@@ -887,7 +883,7 @@ int main(int argc, const char *argv[])
       }
       break;
     case 0xB0: // str, push
-      //cout << "str ili push\n";
+      // cout << "str ili push\n";
       tmp = memory[(unsigned short)cpu->regs[7]++];
       tmp1 = memory[(unsigned short)cpu->regs[7]++];
       if (tmp1 == 18)
@@ -978,7 +974,7 @@ int main(int argc, const char *argv[])
         }
         else if (tmp1 == 1)
         {
-          
+
           cpu->regs[tmp & 0xF] = cpu->regs[tmp >> 8]; // ovo zabraniti?
         }
         else
@@ -1025,13 +1021,13 @@ int main(int argc, const char *argv[])
     if (interTerm)
     {
       cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
+      memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
+      cpu->regs[6]--;
+      memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
+      cpu->regs[6]--;
+      memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
+      cpu->regs[6]--;
+      memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
       cpu->regs[7] = memory[ivtAddr + 6];
       cpu->regs[7] = (memory[ivtAddr + 7] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
       cpu->psw &= 0x7FFF;
@@ -1040,13 +1036,13 @@ int main(int argc, const char *argv[])
     else if (interTimer)
     {
       cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
-            cpu->regs[6]--;
-            memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
+      memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] >> 8);
+      cpu->regs[6]--;
+      memory[(unsigned short)cpu->regs[6]] = (char)((unsigned short)cpu->regs[7] & 0xFF);
+      cpu->regs[6]--;
+      memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw >> 8);
+      cpu->regs[6]--;
+      memory[(unsigned short)cpu->regs[6]] = (char)(cpu->psw & 0xFF);
       cpu->regs[7] = memory[ivtAddr + 4];
       cpu->regs[7] = (memory[ivtAddr + 5] << 8) | ((unsigned short)cpu->regs[7] & 0xFF);
       cpu->psw &= 0x7FFF;
@@ -1060,7 +1056,7 @@ int main(int argc, const char *argv[])
   // char h = 1;
   // write(pfdFake.fd, &h, sizeof(char));
   t1->join();
-  //t2->join();
+  // t2->join();
   t3->join();
 
   cout << "\n--------------------------------------------------------------------" << endl;
@@ -1092,10 +1088,10 @@ int main(int argc, const char *argv[])
   tcsetattr(0, TCSADRAIN, &term);
 
   delete t1;
-  //delete t2;
+  // delete t2;
   delete t3;
 
-  cout << "\nUspeh\n";
+  //cout << "\nUspeh\n";
   /*
   {
   "files.associations": {

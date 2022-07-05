@@ -446,12 +446,12 @@ int main(int argc, char const *argv[])
           else
           {
             (*it2)->value = tmp->size;
-            //cout << (*it2)->name << endl;
+            // cout << (*it2)->name << endl;
             //(*it)->printInfo();
             for (auto it3 = (*it)->lstRel->at((*it2)->name)->begin(); it3 != (*it)->lstRel->at((*it2)->name)->end(); it3++)
             {
               (*it3)->offset += (*it2)->value;
-              //cout << "Sekc: " << (*it2)->name << " : " << (*it3)->offset << endl;
+              // cout << "Sekc: " << (*it2)->name << " : " << (*it3)->offset << endl;
             }
             tmp->size += (*it2)->size;
           }
@@ -876,7 +876,7 @@ int main(int argc, char const *argv[])
             {
               for (relEntryLinker *ss : *i2->second)
               {
-                //cout << ss->offset << "\t" << ss->typ << "\t" << ss->symbol << "\t" << ss->addend << endl;
+                // cout << ss->offset << "\t" << ss->typ << "\t" << ss->symbol << "\t" << ss->addend << endl;
                 outfile << ss->offset << "\t" << ss->typ << "\t" << ss->symbol << "\t" << ss->addend << endl;
                 // outfile_b << ent->offset << ent->typ << ent->symbol->name << ent->addend;
                 outfile_b.write(reinterpret_cast<const char *>(&ss->offset), sizeof(ss->offset));
@@ -968,7 +968,7 @@ int main(int argc, char const *argv[])
         outfile_b << (char)0;
         outfile_b << ent->name;
         outfile_b << (char)0;
-        //cout << endl;
+        // cout << endl;
         outfile << endl;
       }
       outfile.close();
@@ -984,6 +984,6 @@ int main(int argc, char const *argv[])
 
   delete sections;
   delete sectionAddrs;
-  cout << "Uspeh\n";
+  // cout << "Uspeh\n";
   return 0;
 }

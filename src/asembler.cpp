@@ -609,17 +609,17 @@ void processDirective(string dir, FlexLexer *lex)
             if (txt[i] == 'n')
             {
               sectionContent->at(currSection)->push_back('\n');
-              //sectionContent->at(currSection)->push_back((char)0);
+              // sectionContent->at(currSection)->push_back((char)0);
             }
             else if (txt[i] == 't')
             {
               sectionContent->at(currSection)->push_back('\t');
-              //sectionContent->at(currSection)->push_back((char)0);
+              // sectionContent->at(currSection)->push_back((char)0);
             }
             else if (txt[i] == 'b')
             {
               sectionContent->at(currSection)->push_back('\b');
-              //sectionContent->at(currSection)->push_back((char)0);
+              // sectionContent->at(currSection)->push_back((char)0);
             }
             else
             {
@@ -628,7 +628,7 @@ void processDirective(string dir, FlexLexer *lex)
           else
           {
             sectionContent->at(currSection)->push_back(txt[i]);
-            //sectionContent->at(currSection)->push_back((char)0);
+            // sectionContent->at(currSection)->push_back((char)0);
           }
         }
         else
@@ -911,14 +911,16 @@ int main(int argc, char const *argv[])
           processDirective(string(i1.val), lex);
           break;
         case 3: // LABEL
-          if(currSection == "") {
+          if (currSection == "")
+          {
             throw NoSectionError();
           }
           lab = true;
           processLabel(string(i1.val));
           break;
         case 6: // WORD
-          if(currSection == "") {
+          if (currSection == "")
+          {
             throw NoSectionError();
           }
           lab = false;
@@ -1094,7 +1096,7 @@ int main(int argc, char const *argv[])
       // outfile << "  ";
       if (n == 8)
       {
-        //cout << endl;
+        // cout << endl;
         outfile << endl;
         n = 0;
       }
@@ -1176,6 +1178,6 @@ int main(int argc, char const *argv[])
   outfile_b.close();
 
   delete lex;
-  cout << "Upseh\n";
+  // cout << "Upseh\n";
   return 0;
 }
